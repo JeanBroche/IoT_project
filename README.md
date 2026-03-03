@@ -1,1 +1,1 @@
-J'aime beaucoup les pieds (mes pieds son connectés en ZigBee)
+J'aime beaucoup les pieds (mes pieds sont connectés en ZigBee)
