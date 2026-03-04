@@ -34,7 +34,7 @@ bool sendATCommandNoValue(uint8_t* cmd) {
     return false;
 }
 
-// ✅ Teste si le XBee répond au baudrate donné
+// Teste si le XBee répond au baudrate donné
 bool probeXBee(long baudrate) {
     xbeeSerial.end();
     delay(100);

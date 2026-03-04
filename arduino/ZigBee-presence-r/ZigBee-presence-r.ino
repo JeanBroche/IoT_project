@@ -131,7 +131,7 @@ void setup() {
     Serial.begin(9600);
     delay(2000);
 
-    // ✅ Détection automatique du baudrate actuel du XBee
+    // Détection automatique du baudrate actuel du XBee
     Serial.println("Détection baudrate XBee...");
 
     if (probeXBee(115200)) {
