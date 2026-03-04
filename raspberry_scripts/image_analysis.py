@@ -1,35 +1,27 @@
 """
 Script to take images from a Redis queue and extract number of people with opencv.
 """
-from utils.redis_manager import RedisImagesQueueManager
+from utils.redis_manager import RedisImagesQueueManager, RedisAnalysisQueueManager
 from utils.images_processor import PersonCounter, ImageUtilities
-import cv2
-
-OPENCV_MODEL_PATH = "yolo11n.pt"
+from utils import constants
 
 def main():
-    r = RedisImagesQueueManager()
-    counter = PersonCounter(OPENCV_MODEL_PATH)
-
-    i = 0
+    images_r = RedisImagesQueueManager()
+    analysis_r = RedisAnalysisQueueManager()
+    counter = PersonCounter(constants.OPENCV_MODEL_PATH)
 
     while True:
-        size, image_data, mouvement = r.get_image_from_queue()
-
-        if not mouvement:
-            continue
+        _, image_data, movement = images_r.get_image_from_queue()
 
         image = ImageUtilities.cv2_imread_from_buffer(image_data)
         nb_people, avg_confidence = counter.count_people(image)
-
-        # Write image to file
-        cv2.imwrite(f"output_image_{i}.jpg", image)
 
         print("Nombre de personnes :", nb_people)
         print("Précision moyenne :", round(avg_confidence, 3))
         print("-" * 30)
 
-        i += 1
+        analysis_r.push_analysis_to_queue(nb_people, avg_confidence, movement)
+
 
 if __name__ == "__main__":
     main()

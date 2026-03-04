@@ -1,3 +1,6 @@
+"""
+Class to manage image processing, including person counting and image utilities.
+"""
 from ultralytics import YOLO
 import numpy as np
 import cv2

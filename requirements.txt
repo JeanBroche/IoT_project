@@ -1,3 +1,0 @@
-pyserial>=3.5
-redis>=7.2
-opencv-python>=4.13

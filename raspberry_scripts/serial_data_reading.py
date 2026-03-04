@@ -21,7 +21,7 @@ def main():
             time.sleep(5)
         if not error:
             break
-    
+
     while True:
         error = False
         try:
@@ -37,8 +37,6 @@ def main():
         size, image_data = camera_manager.get_image_from_serial()
 
         movement_data = xbee_manager.get_movement_from_serial()
-
-        print(movement_data)
 
         r.push_image_to_queue(size, image_data, movement_data)
 
