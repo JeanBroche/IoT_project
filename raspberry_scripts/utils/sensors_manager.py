@@ -6,7 +6,7 @@ Class to manage the devices connected to the serial ports :
 import struct
 import serial
 import serial.tools.list_ports
-import utils.constants as constants
+from . import constants
 
 class DeviceNotFoundException(Exception):
     """Exception raised when the device is not found."""
@@ -32,10 +32,7 @@ class SensorManager:
     def __find_device(self) -> str:
         """Find the serial device based on the PID and VID."""
         ports = serial.tools.list_ports.comports()
-        print("searching for device with PID: {} and VID: {}".format(self.pid, self.vid))
-        print("Available ports:")
         for port in ports:
-            print(" - {} : pid {} | vid {}".format(port.device, port.pid, port.vid))
             if port.vid == self.vid and port.pid == self.pid:
                 return port.device
         return None
@@ -51,7 +48,9 @@ class SensorManager:
 class ESP32CameraManager(SensorManager):
     """Manager for the ESP32 camera module."""
     def __init__(self):
-        super().__init__(pid=constants.ESP32_PID, vid=constants.ESP32_VID, timeout=10, baudrate=921600)
+        super().__init__(
+            pid=constants.ESP32_PID, vid=constants.ESP32_VID, timeout=10, baudrate=921600
+        )
 
     def get_image_from_serial(self):
         """Read an image from the serial port."""
@@ -76,7 +75,9 @@ class ESP32CameraManager(SensorManager):
 class ArduinoXBeeManager(SensorManager):
     """Manager for the Arduino with XBee module. For the movement detection."""
     def __init__(self):
-        super().__init__(pid=constants.ARDUINO_PID, vid=constants.ARDUINO_VID, timeout=1, baudrate=9600)
+        super().__init__(
+            pid=constants.ARDUINO_PID, vid=constants.ARDUINO_VID, timeout=1, baudrate=9600
+        )
         self.ser.reset_input_buffer()
 
     def get_movement_from_serial(self):
