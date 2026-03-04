@@ -20,6 +20,8 @@
 #define HREF_GPIO_NUM 47
 #define PCLK_GPIO_NUM 13
 
+unsigned long lastCaptureTime = 0;
+const unsigned long captureInterval = 5000; // 5 secs
 
 void sendImage() {
   camera_fb_t* fb = esp_camera_fb_get();
@@ -63,11 +65,11 @@ void setup() {
 
   if (psramFound()) {
     config.frame_size = FRAMESIZE_VGA;  // 640x480
-    config.jpeg_quality = 12;           // 0-63 (lower = better quality)
-    config.fb_count = 2;
+    config.jpeg_quality = 5;
+    config.fb_count = 1;
   } else {
-    config.frame_size = FRAMESIZE_QVGA;  // 320x240
-    config.jpeg_quality = 15;
+    config.frame_size = FRAMESIZE_VGA // FRAMESIZE_QVGA;  // 320x240
+    config.jpeg_quality = 5;
     config.fb_count = 1;
   }
 
@@ -81,6 +83,10 @@ void setup() {
 }
 
 void loop() {
-  sendImage();
-  delay(5000);
+  unsigned long currentTime = millis();
+
+  if (currentTime - lastCaptureTime >= captureInterval) {
+    sendImage();
+    lastCaptureTime = currentTime;
+  }
 }
