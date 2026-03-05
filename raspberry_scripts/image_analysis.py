@@ -1,9 +1,9 @@
 """
 Script to take images from a Redis queue and extract number of people with opencv.
 """
-from utils.redis_manager import RedisImagesQueueManager, RedisAnalysisQueueManager
-from utils.images_processor import PersonCounter, ImageUtilities
-from utils import constants
+from raspberry_scripts.utils.redis_manager import RedisImagesQueueManager, RedisAnalysisQueueManager
+from raspberry_scripts.utils.images_processor import PersonCounter, ImageUtilities
+from shared import constants
 
 def main():
     images_r = RedisImagesQueueManager()

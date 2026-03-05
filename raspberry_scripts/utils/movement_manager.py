@@ -3,7 +3,7 @@ Class to manage movement data by checking the movement for time
 intervals and keeping the last movement data in memory.
 """
 import time
-from . import constants
+from shared import constants
 
 class MovementManager:
     """Manager for movement data."""

@@ -11,3 +11,10 @@ J'aime beaucoup les pieds (mes pieds sont connectés en ZigBee)
 Using openCV and a pre-trained model to detect people in images.
 
 Used model : Yolo8n for object detection, because it's small and fast, adatpted for raspberry pi (2 Go).
+
+# Start commands :
+```bash
+python -m raspberry_scripts.serial_data_reading
+python -m raspberry_scripts.image_analysis
+python -m raspberry_scripts.mqtt_transmission
+```
