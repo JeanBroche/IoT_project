@@ -31,3 +31,10 @@ python -m raspberry_scripts.serial_data_reading
 python -m raspberry_scripts.image_analysis
 python -m raspberry_scripts.mqtt_transmission
 ```
+
+# Install redis on raspberry pi :
+```bash
+sudo apt install redis-server
+sudo systemctl enable redis-server
+sudo systemctl start redis-server
+```
