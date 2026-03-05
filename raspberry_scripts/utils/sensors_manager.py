@@ -6,7 +6,7 @@ Class to manage the devices connected to the serial ports :
 import struct
 import serial
 import serial.tools.list_ports
-from . import constants
+from shared import constants
 
 class DeviceNotFoundException(Exception):
     """Exception raised when the device is not found."""

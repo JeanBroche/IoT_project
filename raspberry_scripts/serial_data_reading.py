@@ -3,8 +3,8 @@ Script to read images from a serial port and push them to a Redis queue.
 """
 import time
 
-from utils.sensors_manager import ESP32CameraManager, ArduinoXBeeManager, DeviceNotFoundException
-from utils.redis_manager import RedisImagesQueueManager
+from raspberry_scripts.utils.sensors_manager import ESP32CameraManager, ArduinoXBeeManager, DeviceNotFoundException
+from raspberry_scripts.utils.redis_manager import RedisImagesQueueManager
 
 MAX_QUEUE_SIZE = 10
 
@@ -39,6 +39,8 @@ def main():
         movement_data = xbee_manager.get_movement_from_serial()
 
         r.push_image_to_queue(size, image_data, movement_data)
+
+        print("push")
 
 if __name__ == "__main__":
     main()

@@ -3,7 +3,7 @@ Class to manage the connection to Redis and push data to a queue.
 """
 import json
 import redis
-from . import constants
+from shared import constants
 
 class RedisQueueManager:
     """Manager for Redis connection."""
