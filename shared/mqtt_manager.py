@@ -22,7 +22,7 @@ class MQTTManager:
             topic (str): The topic to publish to.
             payload (dict): The payload to publish.
         """
-        self.mqtt_client.publish(topic, json.dumps(payload))
+        self.mqtt_client.publish(topic, json.dumps(payload), qos=1)
 
 
 class MQTTCountPublisher(MQTTManager):
