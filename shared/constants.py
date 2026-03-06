@@ -25,6 +25,6 @@ MOVEMENT_VALIDITY_INTERVAL = 30 * 60  # seconds (30 minutes)
 
 
 INFLUXDB_URL = "http://localhost:8086"
-INFLUXDB_TOKEN = "my-token"
-INFLUXDB_ORG = "my-org"
-INFLUXDB_DATABASE = "iot_project_bucket"
+INFLUXDB_TOKEN = "G2CNkL3-w15Ho3JuuEoWm55kGA4CtVHvujyQR2EUKxy3SI6TH15Ad62cpFIpaQ5IBt1PhXsx_AUSqr4bPuvlYg=="
+INFLUXDB_ORG = "IoT"
+INFLUXDB_DATABASE = "IoT_project"

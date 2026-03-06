@@ -14,11 +14,13 @@ class DBManager:
 
     def __init__(self):
         self.client = InfluxDBClient3(
-            url=INFLUXDB_URL,
+            host=INFLUXDB_URL,
             token=INFLUXDB_TOKEN,
             org=INFLUXDB_ORG,
             database=INFLUXDB_DATABASE
         )
+        print("Connected to InfluxDB")
+        # self.save_count(15, 85.0, False, "test_id", "test_classroom2")
 
     def save_count(self, nb_people: int, avg_confidence: float,
                    movement: bool, raspberry_id: str, classroom_name: str):
