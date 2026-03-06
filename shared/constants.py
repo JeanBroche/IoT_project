@@ -18,6 +18,7 @@ REDIS_ERRORS_QUEUE_NAME = "errors"
 
 
 MQTT_COUNT_TOPIC = "IoT_Project/Count_Stream"
+MQTT_ERRORS_TOPIC = "IoT_Project/Errors_Stream"
 MQTT_BROKER_HOST = "localhost"
 MQTT_BROKER_PORT = 1883
 

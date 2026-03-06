@@ -7,7 +7,7 @@ from influxdb_client_3 import InfluxDBClient3, Point, WritePrecision
 from shared.constants import INFLUXDB_URL, INFLUXDB_TOKEN, INFLUXDB_ORG, INFLUXDB_DATABASE
 
 
-class DBCountManager:
+class DBManager:
     """
     Class to manage database interactions.
     """
@@ -21,6 +21,7 @@ class DBCountManager:
         )
         print("Connected to InfluxDB")
         # self.save_count(15, 85.0, False, "test_id", "test_classroom2")
+        self.save_error("Camera lost", "test_id", "test_classroom2")
 
     def save_count(self, nb_people: int, avg_confidence: float,
                    movement: bool, raspberry_id: str, classroom_name: str):
