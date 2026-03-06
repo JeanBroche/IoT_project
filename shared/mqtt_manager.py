@@ -32,6 +32,12 @@ class MQTTManager:
         Start the MQTT client loop.
         """
         self.mqtt_client.loop_start()
+    
+    def loop_forever(self):
+        """
+        Loop forever to keep the MQTT client running.
+        """
+        self.mqtt_client.loop_forever()
 
 
 class MQTTCountPublisher(MQTTManager):
@@ -65,6 +71,32 @@ class MQTTCountPublisher(MQTTManager):
         info.wait_for_publish()
 
 
+class MQTTErrorsPublisher(MQTTManager):
+    """
+    Class to manage MQTT transmission of errors from the Raspberry Pi to the server.
+    """
+
+    def __init__(self, host: str, port: int):
+        super().__init__(host, port)
+        self.loop_start()
+
+    def publish_error(self, error_code: int, raspberry_id: str):
+        """
+        Publish an error code to the MQTT broker.
+
+        Args:
+            error_code (int): The error code to publish.
+            raspberry_id (str): The ID of the Raspberry Pi.
+        """
+        payload = {
+            "error_code": error_code,
+            "raspberry_id": raspberry_id
+        }
+        info = self.publish_to_topic(constants.MQTT_ERRORS_TOPIC, payload)
+        if info.rc != mqtt.MQTT_ERR_SUCCESS:
+            print(f"Failed to publish message: {mqtt.error_string(info.rc)}")
+        info.wait_for_publish()
+
 
 class MQTTCountSubscriber(MQTTManager):
     """
@@ -86,12 +118,6 @@ class MQTTCountSubscriber(MQTTManager):
         """
         self.mqtt_client.loop_stop()
 
-    def loop_forever(self):
-        """
-        Loop forever to keep the MQTT client running.
-        """
-        self.mqtt_client.loop_forever()
-
     @staticmethod
     def parse_message(message):
         """
@@ -107,3 +133,40 @@ class MQTTCountSubscriber(MQTTManager):
         print('-' * 30)
         message =json.loads(message)
         return message["nb_people"], message["avg_confidence"], message["movement"], message["raspberry_id"]
+
+class MQTTErrorsSubscriber(MQTTManager):
+    """
+    Class to manage MQTT subscription to errors from the Raspberry Pi to the server.
+    """
+
+    def __init__(self, host: str, port: int, on_message_callback):
+        super().__init__(host, port)
+
+        def on_connect(client, userdata, flags, rc):
+            client.subscribe(constants.MQTT_ERRORS_TOPIC)
+
+        self.mqtt_client.on_connect = on_connect
+        self.mqtt_client.on_message = on_message_callback
+
+    def stop(self):
+        """
+        Stop the MQTT client loop.
+        """
+        self.mqtt_client.loop_stop()
+    
+    @staticmethod
+    def parse_message(message):
+        """
+        Parse the MQTT message payload.
+
+        Args:
+            message: The MQTT message.
+
+        Returns:
+            A tuple containing the error code and Raspberry Pi ID.
+        """
+        print('-' * 30)
+        print(message)
+        print('-' * 30)
+        message =json.loads(message)
+        return message["error_code"], message["raspberry_id"]

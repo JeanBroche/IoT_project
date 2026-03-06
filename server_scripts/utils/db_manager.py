@@ -7,7 +7,7 @@ from influxdb_client_3 import InfluxDBClient3, Point, WritePrecision
 from shared.constants import INFLUXDB_URL, INFLUXDB_TOKEN, INFLUXDB_ORG, INFLUXDB_DATABASE
 
 
-class DBManager:
+class DBCountManager:
     """
     Class to manage database interactions.
     """
@@ -44,3 +44,21 @@ class DBManager:
         self.client.write(point, write_precision=WritePrecision.S)
 
         print(f"Saving to database: {nb_people} people, {avg_confidence} confidence, movement: {movement}, id: {raspberry_id}, classroom: {classroom_name}")
+
+    def save_error(self, error_message: str, raspberry_id: str, classroom_name: str):
+        """
+        Save an error message to the database.
+
+        Args:
+            error_message (str): The error message to save.
+            raspberry_id (str): The ID of the Raspberry Pi.
+            classroom_name (str): The name of the classroom.
+        """
+        point = Point("errors") \
+            .tag("raspberry_id", raspberry_id) \
+            .tag("classroom_name", classroom_name) \
+            .field("error_message", error_message)
+        
+        self.client.write(point, write_precision=WritePrecision.S)
+
+        print(f"Saving error to database: {error_message}, id: {raspberry_id}, classroom: {classroom_name}")
