@@ -2,6 +2,7 @@
 Class to manage the connection to Redis and push data to a queue.
 """
 import json
+import time
 import redis
 from shared import constants
 
@@ -79,3 +80,35 @@ class RedisAnalysisQueueManager(RedisQueueManager):
         movement = queue_dict['movement']
 
         return nb_people, avg_confidence, movement
+
+class RedisErrorsQueueManager(RedisQueueManager):
+    """Manager for Redis connection to push errors."""
+    def __init__(self, host='localhost', port=6379, db=0):
+        super().__init__(
+            queue_name=constants.REDIS_ERRORS_QUEUE_NAME,
+            max_queue_size=10, host=host, port=port, db=db
+        )
+        self.errors_timstamps = {}
+
+    def push_error_to_queue(self, error_code):
+        """Push error code to the Redis queue."""
+        if error_code in self.errors_timstamps:
+            # If the same error code was pushed less than 30 minutes ago, skip it
+            if time.time() - self.errors_timstamps[error_code] < 60 * 30:
+                return
+        
+        try:
+            self.push_to_queue(json.dumps({'error_code': error_code}))
+            self.errors_timstamps[error_code] = time.time()
+        except Exception as _:
+            pass
+
+    def get_error_from_queue(self):
+        """Get error code from the Redis queue."""
+        (_, queue_data) = self.get_from_queue()
+        queue_dict = json.loads(queue_data)
+
+        error_code = queue_dict['error_code']
+
+        return error_code
+
