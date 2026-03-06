@@ -1,6 +1,3 @@
-# Les pieds
-J'aime beaucoup les pieds (mes pieds sont connectés en ZigBee)
-
 # Requirements
 - Python 3.14+
 - Redis 8.6+
