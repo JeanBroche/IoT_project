@@ -28,12 +28,16 @@ void sendImage() {
   if (!fb) return;
 
   uint32_t size = fb->len;
+  uint8_t header[2] = {0xAA, 0x55};
 
+  // Send header
+  Serial.write(header, 2);
   // Send size (4 octets)
   Serial.write((uint8_t*)&size, 4);
-
   // Send image
   Serial.write(fb->buf, fb->len);
+
+  Serial.flush();
 
   esp_camera_fb_return(fb);
 }
@@ -63,15 +67,19 @@ void setup() {
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
 
-  if (psramFound()) {
-    config.frame_size = FRAMESIZE_VGA;  // 640x480
-    config.jpeg_quality = 5;
-    config.fb_count = 1;
-  } else {
-    config.frame_size = FRAMESIZE_VGA // FRAMESIZE_QVGA;  // 320x240
-    config.jpeg_quality = 5;
-    config.fb_count = 1;
-  }
+  config.frame_size = FRAMESIZE_VGA;  // 640x480
+  config.jpeg_quality = 5;
+  config.fb_count = 1;
+
+  // if (psramFound()) {
+  //   config.frame_size = FRAMESIZE_VGA;  // 640x480
+  //   config.jpeg_quality = 5;
+  //   config.fb_count = 1;
+  // } else {
+  //   config.frame_size = FRAMESIZE_VGA // FRAMESIZE_QVGA;  // 320x240
+  //   config.jpeg_quality = 5;
+  //   config.fb_count = 1;
+  // }
 
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK) {

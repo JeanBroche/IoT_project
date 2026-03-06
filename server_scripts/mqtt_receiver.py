@@ -7,12 +7,18 @@ from server_scripts.utils.db_manager import DBManager
 from shared import constants
 from shared.mqtt_manager import MQTTCountSubscriber
 
+
+classroom_map = {
+    "0xe45f01fb97c1": "Salle B03",
+}
+
 def main():
     db_manager = DBManager()
 
     def on_message_callback(client, userdata, message):
         nb_people, avg_confidence, movement, raspberry_id = MQTTCountSubscriber.parse_message(message.payload)
-        db_manager.save_count(nb_people, avg_confidence, movement, raspberry_id)
+        classroom_name = classroom_map.get(raspberry_id, "Unknown")
+        db_manager.save_count(nb_people, avg_confidence, movement, raspberry_id, classroom_name)
 
     mqtt_c = MQTTCountSubscriber("127.0.0.1", constants.MQTT_BROKER_PORT, on_message_callback)
     mqtt_c.loop_forever()
