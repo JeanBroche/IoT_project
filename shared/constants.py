@@ -22,3 +22,9 @@ MQTT_BROKER_PORT = 1883
 
 
 MOVEMENT_VALIDITY_INTERVAL = 30 * 60  # seconds (30 minutes)
+
+
+INFLUXDB_URL = "http://localhost:8086"
+INFLUXDB_TOKEN = "my-token"
+INFLUXDB_ORG = "my-org"
+INFLUXDB_DATABASE = "iot_project_bucket"

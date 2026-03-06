@@ -85,5 +85,8 @@ class MQTTCountSubscriber(MQTTManager):
         Returns:
             A tuple containing the number of people, average confidence, and movement status.
         """
-        message =json.loads(message.payload.decode("utf-8"))
+        print('-' * 30)
+        print(message)
+        print('-' * 30)
+        message =json.loads(message)
         return message["nb_people"], message["avg_confidence"], message["movement"], message["raspberry_id"]

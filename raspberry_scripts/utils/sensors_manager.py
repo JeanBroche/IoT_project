@@ -51,23 +51,48 @@ class ESP32CameraManager(SensorManager):
         super().__init__(
             pid=constants.ESP32_PID, vid=constants.ESP32_VID, timeout=10, baudrate=921600
         )
+    
+    def __read_exact(self, n):
+        """Read exactly n bytes from the serial port."""
+        data = bytearray()
+        while len(data) < n:
+            chunk = self.ser.read(n - len(data))
+            if not chunk:
+                return None
+            data.extend(chunk)
+        return bytes(data)
+    
+    def __sync_to_frame(self):
+        """Sync to the start of a frame by looking for the header."""
+        while True:
+            byte = self.ser.read(1)
+            if not byte:
+                return False
+            if byte == b'\xAA':
+                next_byte = self.ser.read(1)
+                if next_byte == b'\x55':
+                    return True
 
     def get_image_from_serial(self):
         """Read an image from the serial port."""
+        if not self.__sync_to_frame():
+            return None, None
+
         # read size
-        size_data = self.ser.read(4)
-        if len(size_data) < 4:
-            return None
+        size_data = self.__read_exact(4)
+        if not size_data:
+            return None, None
 
         size = struct.unpack('<I', size_data)[0]
 
+        if size <= 0 or size > 400 * 1024:  # For 640x480 images, the size should not exceed 400KB
+            self.ser.reset_input_buffer()  # Clear buffer to resync
+            return None, None
+
         # read image
-        image_data = b''
-        while len(image_data) < size:
-            packet = self.ser.read(size - len(image_data))
-            if not packet:
-                break
-            image_data += packet
+        image_data = self.__read_exact(size)
+        if not image_data:
+            return None, None
 
         return size, image_data
 
