@@ -12,9 +12,12 @@ class MQTTManager:
 
     def __init__(self, host: str, port: int):
         self.mqtt_client = mqtt.Client()
+
+        self.mqtt_client.reconnect_delay_set(min_delay=1, max_delay=120)
+
         self.mqtt_client.connect(host, port)
 
-    def publish_to_topic(self, topic: str, payload: dict):
+    def publish_to_topic(self, topic: str, payload: dict, qos: int = 1):
         """
         Publish the payload to the MQTT broker.
 
@@ -22,13 +25,23 @@ class MQTTManager:
             topic (str): The topic to publish to.
             payload (dict): The payload to publish.
         """
-        self.mqtt_client.publish(topic, json.dumps(payload), qos=1)
+        return self.mqtt_client.publish(topic, json.dumps(payload), qos=qos)
+
+    def loop_start(self):
+        """
+        Start the MQTT client loop.
+        """
+        self.mqtt_client.loop_start()
 
 
 class MQTTCountPublisher(MQTTManager):
     """
     Class to manage MQTT transmission of the count stream from the Raspberry Pi to the server.
     """
+
+    def __init__(self, host: str, port: int):
+        super().__init__(host, port)
+        self.loop_start()
 
     def publish_count(self, nb_people: int, avg_confidence: float, movement: bool, raspberry_id: str):
         """
@@ -46,7 +59,11 @@ class MQTTCountPublisher(MQTTManager):
             "movement": movement,
             "raspberry_id": raspberry_id
         }
-        self.publish_to_topic(constants.MQTT_COUNT_TOPIC, payload)
+        info = self.publish_to_topic(constants.MQTT_COUNT_TOPIC, payload)
+        if info.rc != mqtt.MQTT_ERR_SUCCESS:
+            print(f"Failed to publish message: {mqtt.error_string(info.rc)}")
+        info.wait_for_publish()
+
 
 
 class MQTTCountSubscriber(MQTTManager):
