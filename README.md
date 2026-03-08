@@ -2,6 +2,8 @@
 - Python 3.14+
 - Redis 8.6+
 - Eclipse Mosquitto
+- InfluxDB v2.0+
+- Grafana
 
 # Computer vision model
 
@@ -16,18 +18,12 @@ The project is structured in four main parts:
 - `server_scripts`: Contains the script that runs on the server to receive MQTT messages and save them to the database.
 - `esp_32_source`: Contains the source code for the ESP32 XIAO sense, that reads the data from the camera and sends it via serial.
 - `arduino`: Contains the source code for the 2 Arduino that communicate via ZigBee. The sender reads from the movement detector and sends the data to the receiver that is connected to the Raspberry Pi via USB and sends the data via serial.
+- `services_files`: Contains the systemd service files for the Raspberry Pi, to run the scripts at startup and keep them running in case of failure.
 
 # Other
 The `ml_image-reader` contains a jupyter notebook that was used to test the image analysis and the model, but it's not used in the final project.
 
 `shared` contains the code that is shared between the Raspberry Pi and the server, such as the MQTT manager and the constants.
-
-# Start commands :
-```bash
-python -m raspberry_scripts.serial_data_reading
-python -m raspberry_scripts.image_analysis
-python -m raspberry_scripts.mqtt_transmission
-```
 
 # Install redis on raspberry pi :
 ```bash
