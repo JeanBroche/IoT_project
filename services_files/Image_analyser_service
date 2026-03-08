@@ -1,0 +1,15 @@
+/home/admin/IoT_project
+
+[Unit]
+Description=Lance le script d'analyse des images
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/IoT_project
+ExecStart=/bin/bash -c "source /home/admin/IoT_project/IoT_venv/bin/activate && exec python -m raspberry_scripts.image_analysis"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
